@@ -9,7 +9,7 @@ type File struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Data      bytes.Buffer
+	data      bytes.Buffer
 }
 
 func New(created time.Time, data bytes.Buffer) *File {
@@ -17,7 +17,7 @@ func New(created time.Time, data bytes.Buffer) *File {
 		Name:      "",
 		CreatedAt: created,
 		UpdatedAt: created,
-		Data:      data,
+		data:      data,
 	}
 }
 
@@ -39,5 +39,9 @@ func (i InMemoryStore) GetByName(name string) (*File, error) {
 }
 
 func (i InMemoryStore) ListAll() []*File {
-	panic("implement me")
+	return []*File{{
+		Name:      "123",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}}
 }

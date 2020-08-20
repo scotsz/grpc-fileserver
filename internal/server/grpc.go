@@ -63,6 +63,7 @@ func (s server) ListAll(ctx context.Context, req *pb.ListRequest) (*pb.FileList,
 	for _, f := range files {
 		list.WriteString(fmt.Sprintf("%s | %v | %v", f.Name, f.CreatedAt, f.UpdatedAt))
 	}
+	time.Sleep(time.Second * 5)
 	return &pb.FileList{}, nil
 }
 

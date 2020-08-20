@@ -17,8 +17,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	grpcServer := grpc.NewServer()
+	limit10 := server.NewRateLimiter([]string{"DownloadFile", "UploadFile"}, 10)
+	limit100 := server.NewRateLimiter([]string{"ListAll"}, 100)
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(limit100.Unary()),
+		grpc.StreamInterceptor(limit10.Stream()),
+	)
 	store := file.InMemoryStore{}
 	pb.RegisterFileStoreServer(grpcServer, server.New(cfg, store))
-	grpcServer.Serve(lis)
+
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
