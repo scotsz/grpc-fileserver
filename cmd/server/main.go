@@ -17,11 +17,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	limit10 := server.NewRateLimiter([]string{"DownloadFile", "UploadFile"}, 10)
-	limit100 := server.NewRateLimiter([]string{"ListAll"}, 100)
+	streamLimiter := server.NewRateLimiter([]string{"DownloadFile", "UploadFile"}, cfg.StreamLimit)
+	listLimiter := server.NewRateLimiter([]string{"ListAll"}, cfg.ListLimit)
+
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(limit100.Unary()),
-		grpc.StreamInterceptor(limit10.Stream()),
+		grpc.UnaryInterceptor(listLimiter.Unary()),
+		grpc.StreamInterceptor(streamLimiter.Stream()),
 	)
 	store := file.InMemoryStore{}
 	pb.RegisterFileStoreServer(grpcServer, server.New(cfg, store))

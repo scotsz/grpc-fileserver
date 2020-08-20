@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,39 +25,39 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type UploadRequest struct {
+type FileData struct {
 	Chunk                []byte   `protobuf:"bytes,1,opt,name=chunk,proto3" json:"chunk,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UploadRequest) Reset()         { *m = UploadRequest{} }
-func (m *UploadRequest) String() string { return proto.CompactTextString(m) }
-func (*UploadRequest) ProtoMessage()    {}
-func (*UploadRequest) Descriptor() ([]byte, []int) {
+func (m *FileData) Reset()         { *m = FileData{} }
+func (m *FileData) String() string { return proto.CompactTextString(m) }
+func (*FileData) ProtoMessage()    {}
+func (*FileData) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2f1da47343321951, []int{0}
 }
 
-func (m *UploadRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UploadRequest.Unmarshal(m, b)
+func (m *FileData) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FileData.Unmarshal(m, b)
 }
-func (m *UploadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UploadRequest.Marshal(b, m, deterministic)
+func (m *FileData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FileData.Marshal(b, m, deterministic)
 }
-func (m *UploadRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UploadRequest.Merge(m, src)
+func (m *FileData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FileData.Merge(m, src)
 }
-func (m *UploadRequest) XXX_Size() int {
-	return xxx_messageInfo_UploadRequest.Size(m)
+func (m *FileData) XXX_Size() int {
+	return xxx_messageInfo_FileData.Size(m)
 }
-func (m *UploadRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_UploadRequest.DiscardUnknown(m)
+func (m *FileData) XXX_DiscardUnknown() {
+	xxx_messageInfo_FileData.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_UploadRequest proto.InternalMessageInfo
+var xxx_messageInfo_FileData proto.InternalMessageInfo
 
-func (m *UploadRequest) GetChunk() []byte {
+func (m *FileData) GetChunk() []byte {
 	if m != nil {
 		return m.Chunk
 	}
@@ -103,6 +104,7 @@ func (m *UploadResponse) GetName() string {
 }
 
 type DownloadRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -133,36 +135,12 @@ func (m *DownloadRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DownloadRequest proto.InternalMessageInfo
 
-type File struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *DownloadRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
 }
-
-func (m *File) Reset()         { *m = File{} }
-func (m *File) String() string { return proto.CompactTextString(m) }
-func (*File) ProtoMessage()    {}
-func (*File) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2f1da47343321951, []int{3}
-}
-
-func (m *File) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_File.Unmarshal(m, b)
-}
-func (m *File) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_File.Marshal(b, m, deterministic)
-}
-func (m *File) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_File.Merge(m, src)
-}
-func (m *File) XXX_Size() int {
-	return xxx_messageInfo_File.Size(m)
-}
-func (m *File) XXX_DiscardUnknown() {
-	xxx_messageInfo_File.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_File proto.InternalMessageInfo
 
 type ListRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -174,7 +152,7 @@ func (m *ListRequest) Reset()         { *m = ListRequest{} }
 func (m *ListRequest) String() string { return proto.CompactTextString(m) }
 func (*ListRequest) ProtoMessage()    {}
 func (*ListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2f1da47343321951, []int{4}
+	return fileDescriptor_2f1da47343321951, []int{3}
 }
 
 func (m *ListRequest) XXX_Unmarshal(b []byte) error {
@@ -196,16 +174,17 @@ func (m *ListRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ListRequest proto.InternalMessageInfo
 
 type FileList struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Files                []*FileInfo `protobuf:"bytes,1,rep,name=files,proto3" json:"files,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
 }
 
 func (m *FileList) Reset()         { *m = FileList{} }
 func (m *FileList) String() string { return proto.CompactTextString(m) }
 func (*FileList) ProtoMessage()    {}
 func (*FileList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2f1da47343321951, []int{5}
+	return fileDescriptor_2f1da47343321951, []int{4}
 }
 
 func (m *FileList) XXX_Unmarshal(b []byte) error {
@@ -226,13 +205,75 @@ func (m *FileList) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FileList proto.InternalMessageInfo
 
+func (m *FileList) GetFiles() []*FileInfo {
+	if m != nil {
+		return m.Files
+	}
+	return nil
+}
+
+type FileInfo struct {
+	Name                 string               `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	CreatedAt            *timestamp.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt            *timestamp.Timestamp `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
+}
+
+func (m *FileInfo) Reset()         { *m = FileInfo{} }
+func (m *FileInfo) String() string { return proto.CompactTextString(m) }
+func (*FileInfo) ProtoMessage()    {}
+func (*FileInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2f1da47343321951, []int{5}
+}
+
+func (m *FileInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FileInfo.Unmarshal(m, b)
+}
+func (m *FileInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FileInfo.Marshal(b, m, deterministic)
+}
+func (m *FileInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FileInfo.Merge(m, src)
+}
+func (m *FileInfo) XXX_Size() int {
+	return xxx_messageInfo_FileInfo.Size(m)
+}
+func (m *FileInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_FileInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FileInfo proto.InternalMessageInfo
+
+func (m *FileInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *FileInfo) GetCreatedAt() *timestamp.Timestamp {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return nil
+}
+
+func (m *FileInfo) GetUpdatedAt() *timestamp.Timestamp {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*UploadRequest)(nil), "fileserver.v1.UploadRequest")
+	proto.RegisterType((*FileData)(nil), "fileserver.v1.FileData")
 	proto.RegisterType((*UploadResponse)(nil), "fileserver.v1.UploadResponse")
 	proto.RegisterType((*DownloadRequest)(nil), "fileserver.v1.DownloadRequest")
-	proto.RegisterType((*File)(nil), "fileserver.v1.File")
 	proto.RegisterType((*ListRequest)(nil), "fileserver.v1.ListRequest")
 	proto.RegisterType((*FileList)(nil), "fileserver.v1.FileList")
+	proto.RegisterType((*FileInfo)(nil), "fileserver.v1.FileInfo")
 }
 
 func init() {
@@ -240,23 +281,29 @@ func init() {
 }
 
 var fileDescriptor_2f1da47343321951 = []byte{
-	// 243 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xcd, 0x4a, 0x03, 0x31,
-	0x10, 0xc7, 0x09, 0xb6, 0xd5, 0x8e, 0x5d, 0xa5, 0xa3, 0xa0, 0x2c, 0x2a, 0x12, 0x14, 0x7a, 0x0a,
-	0x7e, 0xdc, 0x05, 0x45, 0xbd, 0xe8, 0x69, 0xc5, 0x8b, 0xb7, 0xa8, 0xa3, 0x06, 0x63, 0x12, 0x93,
-	0xb4, 0x3e, 0xae, 0xaf, 0x22, 0xc9, 0xb2, 0xd0, 0x06, 0x7b, 0xcb, 0xfc, 0x3f, 0x26, 0xbf, 0x10,
-	0x18, 0xbf, 0x29, 0x4d, 0x21, 0x5a, 0x2f, 0xdf, 0x49, 0x38, 0x6f, 0xa3, 0xc5, 0x2a, 0x4b, 0xe4,
-	0x67, 0xe4, 0xc5, 0xec, 0x94, 0x1f, 0x43, 0xf5, 0xe8, 0xb4, 0x95, 0xaf, 0x0d, 0x7d, 0x4f, 0x29,
-	0x44, 0xdc, 0x86, 0xfe, 0xcb, 0xc7, 0xd4, 0x7c, 0xee, 0xb2, 0x43, 0x36, 0x19, 0x35, 0xed, 0xc0,
-	0x8f, 0x60, 0xa3, 0x8b, 0x05, 0x67, 0x4d, 0x20, 0x44, 0xe8, 0x19, 0xf9, 0x45, 0x39, 0x36, 0x6c,
-	0xf2, 0x99, 0x8f, 0x61, 0xf3, 0xda, 0xfe, 0x98, 0xb9, 0x75, 0x7c, 0x00, 0xbd, 0x5b, 0xa5, 0x89,
-	0x57, 0xb0, 0x7e, 0xaf, 0x42, 0xec, 0x64, 0x80, 0xb5, 0x24, 0x27, 0xe9, 0xec, 0x97, 0xc1, 0x30,
-	0x0d, 0x0f, 0xd1, 0x7a, 0xc2, 0x3b, 0x80, 0xf6, 0xa6, 0x24, 0xe1, 0x9e, 0x58, 0xc0, 0x15, 0x0b,
-	0xac, 0xf5, 0xfe, 0x12, 0xb7, 0x45, 0x9c, 0x30, 0xbc, 0x81, 0x51, 0x07, 0x94, 0xd7, 0x1d, 0x14,
-	0x85, 0x82, 0xb6, 0xde, 0x2a, 0xfc, 0x54, 0x3a, 0x61, 0x78, 0x01, 0xab, 0x89, 0xf4, 0x52, 0x6b,
-	0xac, 0x8b, 0xc4, 0xdc, 0xa3, 0xea, 0x9d, 0x7f, 0xda, 0xc9, 0xbf, 0xea, 0x3f, 0xad, 0x48, 0xa7,
-	0x9e, 0x07, 0xf9, 0x07, 0xce, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0xcd, 0x2f, 0x63, 0xb8, 0x96,
-	0x01, 0x00, 0x00,
+	// 337 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0xc1, 0x4a, 0xf3, 0x40,
+	0x10, 0xc7, 0xd9, 0xaf, 0x5f, 0xd5, 0x4e, 0x5b, 0xc5, 0x45, 0xb0, 0x04, 0xd4, 0x10, 0x14, 0x72,
+	0x71, 0xab, 0xf5, 0xd4, 0x8b, 0x50, 0x29, 0x85, 0x82, 0xa7, 0xa8, 0x17, 0x2f, 0xb2, 0x6d, 0xa7,
+	0x35, 0x98, 0x66, 0x63, 0x32, 0xa9, 0x2f, 0xe2, 0xf3, 0xf9, 0x2c, 0xb2, 0xbb, 0x09, 0xd8, 0x10,
+	0xf1, 0x96, 0xcc, 0xfc, 0xfe, 0x3b, 0x3b, 0xbf, 0x85, 0xc3, 0x65, 0x18, 0x61, 0x46, 0x2a, 0x95,
+	0x2b, 0x14, 0x49, 0xaa, 0x48, 0xf1, 0xae, 0x29, 0x61, 0xba, 0xc1, 0x54, 0x6c, 0xae, 0x9d, 0xb3,
+	0x95, 0x52, 0xab, 0x08, 0xfb, 0xa6, 0x39, 0xcb, 0x97, 0x7d, 0x0a, 0xd7, 0x98, 0x91, 0x5c, 0x27,
+	0x96, 0xf7, 0x5c, 0xd8, 0x9b, 0x84, 0x11, 0x8e, 0x25, 0x49, 0x7e, 0x04, 0xcd, 0xf9, 0x6b, 0x1e,
+	0xbf, 0xf5, 0x98, 0xcb, 0xfc, 0x4e, 0x60, 0x7f, 0xbc, 0x73, 0xd8, 0x7f, 0x4a, 0x22, 0x25, 0x17,
+	0x01, 0x66, 0x89, 0x8a, 0x33, 0xe4, 0x1c, 0xfe, 0xc7, 0x72, 0x8d, 0x06, 0x6b, 0x05, 0xe6, 0xdb,
+	0xbb, 0x80, 0x83, 0xb1, 0xfa, 0x88, 0x2d, 0xf7, 0x9e, 0x63, 0x46, 0xb5, 0x58, 0x17, 0xda, 0xf7,
+	0x61, 0x46, 0x05, 0xe2, 0x0d, 0xed, 0x74, 0x5d, 0xe2, 0x97, 0xd0, 0x34, 0x77, 0xef, 0x31, 0xb7,
+	0xe1, 0xb7, 0x07, 0xc7, 0x62, 0x6b, 0x13, 0xa1, 0xb9, 0x69, 0xbc, 0x54, 0x81, 0xa5, 0xbc, 0x4f,
+	0x66, 0xb3, 0xba, 0x56, 0x37, 0x8a, 0x0f, 0x01, 0xe6, 0x29, 0x4a, 0xc2, 0xc5, 0x8b, 0xa4, 0xde,
+	0x3f, 0x97, 0xf9, 0xed, 0x81, 0x23, 0xac, 0x0f, 0x51, 0xfa, 0x10, 0x8f, 0xa5, 0x8f, 0xa0, 0x55,
+	0xd0, 0x23, 0xd2, 0xd1, 0x3c, 0x59, 0x94, 0xd1, 0xc6, 0xdf, 0xd1, 0x82, 0x1e, 0xd1, 0xe0, 0x8b,
+	0x41, 0x4b, 0x5f, 0xeb, 0x81, 0x54, 0x8a, 0x7c, 0x02, 0x60, 0xdd, 0xe9, 0x12, 0xaf, 0x5b, 0x49,
+	0x8b, 0x77, 0x4e, 0x2a, 0x8d, 0x6d, 0xdf, 0x3e, 0xe3, 0x53, 0xe8, 0x94, 0x76, 0xcd, 0x49, 0xa7,
+	0x95, 0x40, 0x45, 0xbd, 0xf3, 0xdb, 0xa4, 0x2b, 0xc6, 0x6f, 0x61, 0x57, 0xeb, 0x1e, 0x45, 0x11,
+	0x77, 0x2a, 0xd4, 0x8f, 0x97, 0xa9, 0x3d, 0x41, 0xf7, 0xef, 0x9a, 0xcf, 0x0d, 0x99, 0x84, 0xb3,
+	0x1d, 0xa3, 0xe1, 0xe6, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x1d, 0x55, 0x53, 0xcc, 0x83, 0x02, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -294,7 +341,7 @@ func (c *fileStoreClient) UploadFile(ctx context.Context, opts ...grpc.CallOptio
 }
 
 type FileStore_UploadFileClient interface {
-	Send(*UploadRequest) error
+	Send(*FileData) error
 	CloseAndRecv() (*UploadResponse, error)
 	grpc.ClientStream
 }
@@ -303,7 +350,7 @@ type fileStoreUploadFileClient struct {
 	grpc.ClientStream
 }
 
-func (x *fileStoreUploadFileClient) Send(m *UploadRequest) error {
+func (x *fileStoreUploadFileClient) Send(m *FileData) error {
 	return x.ClientStream.SendMsg(m)
 }
 
@@ -334,7 +381,7 @@ func (c *fileStoreClient) DownloadFile(ctx context.Context, in *DownloadRequest,
 }
 
 type FileStore_DownloadFileClient interface {
-	Recv() (*File, error)
+	Recv() (*FileData, error)
 	grpc.ClientStream
 }
 
@@ -342,8 +389,8 @@ type fileStoreDownloadFileClient struct {
 	grpc.ClientStream
 }
 
-func (x *fileStoreDownloadFileClient) Recv() (*File, error) {
-	m := new(File)
+func (x *fileStoreDownloadFileClient) Recv() (*FileData, error) {
+	m := new(FileData)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -390,7 +437,7 @@ func _FileStore_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) er
 
 type FileStore_UploadFileServer interface {
 	SendAndClose(*UploadResponse) error
-	Recv() (*UploadRequest, error)
+	Recv() (*FileData, error)
 	grpc.ServerStream
 }
 
@@ -402,8 +449,8 @@ func (x *fileStoreUploadFileServer) SendAndClose(m *UploadResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *fileStoreUploadFileServer) Recv() (*UploadRequest, error) {
-	m := new(UploadRequest)
+func (x *fileStoreUploadFileServer) Recv() (*FileData, error) {
+	m := new(FileData)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -419,7 +466,7 @@ func _FileStore_DownloadFile_Handler(srv interface{}, stream grpc.ServerStream) 
 }
 
 type FileStore_DownloadFileServer interface {
-	Send(*File) error
+	Send(*FileData) error
 	grpc.ServerStream
 }
 
@@ -427,7 +474,7 @@ type fileStoreDownloadFileServer struct {
 	grpc.ServerStream
 }
 
-func (x *fileStoreDownloadFileServer) Send(m *File) error {
+func (x *fileStoreDownloadFileServer) Send(m *FileData) error {
 	return x.ServerStream.SendMsg(m)
 }
 

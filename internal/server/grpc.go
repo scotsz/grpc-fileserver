@@ -3,7 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
-	"fmt"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	pb "grpc-fileserver/api"
@@ -11,7 +11,6 @@ import (
 	"grpc-fileserver/internal/file"
 	"io"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -59,11 +58,23 @@ func (s server) DownloadFile(req *pb.DownloadRequest, fs pb.FileStore_DownloadFi
 
 func (s server) ListAll(ctx context.Context, req *pb.ListRequest) (*pb.FileList, error) {
 	files := s.store.ListAll()
-	var list strings.Builder
+	list := &pb.FileList{}
 	for _, f := range files {
-		list.WriteString(fmt.Sprintf("%s | %v | %v", f.Name, f.CreatedAt, f.UpdatedAt))
+		//list.WriteString(fmt.Sprintf("%s | %v | %v", f.Name, f.CreatedAt, f.UpdatedAt))
+		created, err := ptypes.TimestampProto(f.CreatedAt)
+		if err != nil {
+			created = nil
+		}
+		updated, err := ptypes.TimestampProto(f.UpdatedAt)
+		if err != nil {
+			updated = nil
+		}
+		list.Files = append(list.Files, &pb.FileInfo{
+			Name:      f.Name,
+			CreatedAt: created,
+			UpdatedAt: updated,
+		})
 	}
-	time.Sleep(time.Second * 5)
 	return &pb.FileList{}, nil
 }
 
