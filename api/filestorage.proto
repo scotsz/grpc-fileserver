@@ -1,0 +1,33 @@
+syntax = "proto3";
+package fileserver.v1;
+option go_package = "api";
+
+service FileStore{
+  rpc UploadFile(stream UploadRequest) returns (UploadResponse);
+  rpc DownloadFile(DownloadRequest) returns (stream File);
+  rpc ListAll (ListRequest) returns (FileList);
+}
+
+message UploadRequest {
+  bytes chunk = 1;
+}
+
+message UploadResponse{
+  string name = 1;
+}
+
+message DownloadRequest{
+
+}
+
+message File{
+
+}
+
+message ListRequest{
+
+}
+
+message FileList{
+
+}
