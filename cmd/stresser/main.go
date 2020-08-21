@@ -13,7 +13,16 @@ type Stresser struct {
 }
 
 func (s *Stresser) DownloadAndUpload() {
-
+	for i := 0; i < 100; i++ {
+		stream, err := s.client.UploadFile(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+		for i := 0; i < 20; i++ {
+			err = stream.Send(&pb.FileData{Chunk: []byte("")})
+		}
+	}
+	time.Sleep(time.Minute)
 }
 
 func (s *Stresser) List() {

@@ -43,7 +43,7 @@ func (u *RateLimiter) Unary() grpc.UnaryServerInterceptor {
 		if u.inMethods(info.FullMethod) {
 			err := u.sem.Acquire(ctx, 1)
 			if err != nil {
-				log.Fatal(err)
+				return nil, err
 			}
 			log.Println(info.FullMethod)
 			resp, err := handler(ctx, req)
@@ -62,11 +62,11 @@ func (u *RateLimiter) Stream() grpc.StreamServerInterceptor {
 		handler grpc.StreamHandler,
 	) error {
 		if u.inMethods(info.FullMethod) {
-			log.Println(info.FullMethod)
 			err := u.sem.Acquire(ss.Context(), 1)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
+			log.Println(info.FullMethod)
 			err = handler(srv, ss)
 			u.sem.Release(1)
 			return err
