@@ -7,6 +7,7 @@ type Config struct {
 	MaxFileSize int
 	StreamLimit int64
 	ListLimit   int64
+	ChunkSize   int
 }
 
 func FromFlags() *Config {
@@ -14,11 +15,13 @@ func FromFlags() *Config {
 	maxFileSize := flag.Int("max_size", 12345, "maximum size of a file")
 	streams := flag.Int64("max_streams", 10, "maximum download/upload concurrent requests")
 	lists := flag.Int64("max_list", 100, "maximum ListAll concurrent requests")
+	chunkSize := flag.Int("chunk_size", 4096, "length of a single chunk")
 	flag.Parse()
 	return &Config{
 		GrpcPort:    *port,
 		MaxFileSize: *maxFileSize,
 		StreamLimit: *streams,
 		ListLimit:   *lists,
+		ChunkSize:   *chunkSize,
 	}
 }

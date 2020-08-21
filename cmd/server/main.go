@@ -24,7 +24,7 @@ func main() {
 		grpc.UnaryInterceptor(listLimiter.Unary()),
 		grpc.StreamInterceptor(streamLimiter.Stream()),
 	)
-	store := file.InMemoryStore{}
+	store := file.NewSystemStore("/files")
 	pb.RegisterFileStoreServer(grpcServer, server.New(cfg, store))
 
 	err = grpcServer.Serve(lis)

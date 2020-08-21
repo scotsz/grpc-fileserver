@@ -65,7 +65,7 @@ func (u *RateLimiter) Stream() grpc.StreamServerInterceptor {
 			log.Println(info.FullMethod)
 			err := u.sem.Acquire(ss.Context(), 1)
 			if err != nil {
-				return err
+				log.Fatal(err)
 			}
 			err = handler(srv, ss)
 			u.sem.Release(1)
